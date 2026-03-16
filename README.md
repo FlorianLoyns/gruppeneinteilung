@@ -6,7 +6,7 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue)](https://florianloyns.github.io/gruppeneinteilung/index.html)
 ![Keine Abhängigkeiten](https://img.shields.io/badge/Abh%C3%A4ngigkeiten-keine-brightgreen)
 
-Hier klicken zum Ausprobieren: [index.html](https://florianloyns.github.io/gruppeneinteilung/index.html)
+Hier klicken zum Ausprobieren: [index.html](https://florianloyns.github.io/gruppeneinteilung/)
 
 ---
 
@@ -64,7 +64,7 @@ Gruppeneinteilungen kosten im Unterricht Zeit und erzeugen Diskussionen. Dieses 
 
 ## Schnellstart
 
-1. [`index.html`](index.html) herunterladen oder [online testen](https://florianloyns.github.io/gruppeneinteilung/index.html)
+1. [`index.html`](index.html) herunterladen oder [online testen](https://florianloyns.github.io/gruppeneinteilung/)
 2. Im Browser öffnen – funktioniert lokal ohne Server
 3. Namen eingeben, Methode wählen, Gruppen bilden
 4. Bei Bedarf per Drag & Drop nachbearbeiten und als Word oder PDF exportieren
