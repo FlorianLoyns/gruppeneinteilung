@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gruppeneinteilung | BIGEST Teaching Tools</title>
+  <style>
+    :root {
+      --primary: #2C4A6E;
+      --primary-light: #1e3a57;
+      --accent: #2C4A6E;
+      --accent-hover: #1e3a57;
+      --accent-light: #e8eef5;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --bg: #ffffff;
+      --muted: #f1f5f9;
+      --fg: #1e293b;
+      --text: #1e293b;
+      --subtle: #6b7280;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 2px 8px rgba(0,0,0,.09);
+      --radius: 10px;
+      --transition: all .2s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 15px;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    /* DARK MODE */
+    body.dark {
+      --accent: #4a7cb5;
+      --accent-hover: #3a6a9f;
+      --accent-light: #1e3a57;
+      --border: #374151;
+      --border-light: #2d3748;
+      --bg: #1a1f2e;
+      --muted: #232938;
+      --text: #e2e8f0;
+      --subtle: #9ca3af;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+      --shadow-md: 0 2px 8px rgba(0,0,0,.4);
+    }
+    body.dark input, body.dark textarea, body.dark select {
+      background: #2d3748; color: #e2e8f0; border-color: #374151;
+    }
+    body.dark input:focus, body.dark textarea:focus, body.dark select:focus {
+      border-color: #4a7cb5; box-shadow: 0 0 0 3px rgba(74,124,181,0.2);
+    }
+    body.dark .btn.secondary { background: #2d3748; border-color: #4a7cb5; color: #4a7cb5; }
+    body.dark .btn.secondary:hover { background: #1e3a57; }
+    body.dark .btn.subtle { background: transparent; border-color: #374151; color: #9ca3af; }
+    body.dark .btn.subtle:hover { background: #2d3748; color: #e2e8f0; border-color: #4a7cb5; }
+    body.dark .group-card { background: #2d3748; border-color: #374151; }
+    body.dark .group-card.drag-over { border-color: #4a7cb5; background: #1e3a57; }
+    body.dark .member-chip { background: #374151; border-color: #4b5563; color: #e2e8f0; }
+    body.dark .member-chip:hover { border-color: #4a7cb5; }
+    body.dark .member-chip.dragging { background: #4a7cb5; color: #fff; }
+    body.dark .tag-chip { background: #374151; color: #9ca3af; }
+    body.dark .name-item { background: #232938; border-color: #374151; }
+    body.dark .name-item:hover { border-color: #4a7cb5; }
+    body.dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+    header {
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px 0 8px;
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.3px; margin: 0 0 0 18px; }
+    header .sub { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 2px; margin-left: 18px; }
+
+    .dark-toggle {
+      background: none; border: 1px solid var(--border); border-radius: 999px;
+      padding: 5px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--subtle); display: flex; align-items: center; gap: 6px;
+      transition: var(--transition); margin-right: 18px; white-space: nowrap;
+    }
+    .dark-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 18px; }
+
+    .section {
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      margin-bottom: 14px; box-shadow: var(--shadow-sm);
+    }
+    .section-head {
+      padding: 10px 16px; border-bottom: 1px solid var(--border-light);
+      background: var(--bg); display: flex; align-items: center; gap: 10px;
+    }
+    .section-head .n {
+      width: 26px; height: 26px; border-radius: 6px; background: var(--accent);
+      color: #fff; font-weight: 700; display: flex; align-items: center;
+      justify-content: center; flex: 0 0 auto; font-size: 13px;
+    }
+    .section-head h2 { font-size: 14px; color: var(--text); font-weight: 700; flex: 0 1 auto; }
+    .section-head .hint-right {
+      margin-left: auto; font-size: 12px; color: var(--subtle);
+      font-style: italic; text-align: right; max-width: 55%;
+    }
+    .section-body { padding: 14px 16px; }
+
+    label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    label .hint { font-weight: 400; color: var(--subtle); font-size: 12px; }
+    input[type="text"], input[type="date"], input[type="number"], textarea, select {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 12px; font-family: inherit; font-size: 14px; outline: none;
+      background: var(--bg); color: var(--text); transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(44,74,110,0.12);
+    }
+
+    .row { display: flex; gap: 12px; }
+    @media (max-width: 720px) { .row { flex-direction: column; gap: 0; } }
+    .field { flex: 1; margin-bottom: 12px; }
+
+    /* Name list */
+    .name-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; min-height: 40px; }
+    .name-item {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg); border: 1px solid var(--border-light);
+      border-radius: 999px; padding: 5px 10px 5px 12px;
+      font-size: 13px; font-weight: 600;
+    }
+    .name-item:hover { border-color: var(--accent); }
+    .name-item button {
+      background: none; border: none; cursor: pointer; color: #b7b7b7;
+      font-size: 16px; padding: 0 2px; line-height: 1; display: flex; align-items: center;
+    }
+    .name-item button:hover { color: #d11c1c; }
+    .name-count { font-size: 12px; color: var(--subtle); margin-top: 8px; }
+
+    /* Buttons */
+    .btn {
+      border: none; border-radius: var(--radius); padding: 11px 16px;
+      font-weight: 700; cursor: pointer; font-family: inherit; font-size: 14px;
+      display: inline-flex; gap: 8px; align-items: center; transition: var(--transition);
+    }
+    .btn.primary { background: var(--accent); color: #fff; }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn.secondary { background: var(--bg); border: 2px solid var(--accent); color: var(--accent); }
+    .btn.secondary:hover { background: var(--accent-light); }
+    .btn.subtle { background: transparent; border: 1px solid var(--border); color: var(--subtle); font-weight: 600; }
+    .btn.subtle:hover { background: var(--muted); color: var(--text); border-color: var(--accent); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .add-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: var(--bg); color: var(--subtle); font-weight: 600;
+      cursor: pointer; transition: var(--transition); font-family: inherit; font-size: 13px;
+    }
+    .add-btn:hover { background: var(--muted); color: var(--text); border-color: var(--accent); }
+    .add-btn.danger { color: #c33; }
+    .add-btn.danger:hover { background: #fef2f2; color: #b91c1c; border-color: #f87171; }
+
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 6px; }
+    .method-card {
+      border: 2px solid var(--border-light); border-radius: var(--radius);
+      padding: 12px 14px; cursor: pointer; background: var(--bg); transition: var(--transition);
+    }
+    .method-card:hover { border-color: var(--accent); }
+    .method-card.active { border-color: var(--accent); background: var(--accent-light); }
+    .method-card .mc-icon { font-size: 22px; margin-bottom: 4px; }
+    .method-card .mc-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .method-card .mc-desc { font-size: 11px; color: var(--subtle); margin-top: 2px; }
+
+    .method-options { margin-top: 12px; padding: 12px; background: var(--bg); border: 1px solid var(--border-light); border-radius: var(--radius); }
+    .method-options label { margin-bottom: 6px; }
+
+    /* Result groups */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .group-card {
+      background: var(--bg); border: 2px solid var(--border-light);
+      border-radius: var(--radius); padding: 12px;
+      transition: border-color .2s ease, background .2s ease;
+      min-height: 80px;
+    }
+    .group-card.drag-over { border-color: var(--accent); background: var(--accent-light); }
+    .group-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .group-title-input {
+      font-size: 13px; font-weight: 700; color: var(--accent);
+      border: none; background: transparent; outline: none; width: 100%;
+      padding: 0; font-family: inherit;
+    }
+    .group-title-input:focus { border-bottom: 1px solid var(--accent); }
+    .group-count { font-size: 11px; color: var(--subtle); white-space: nowrap; margin-left: 8px; }
+
+    .member-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--muted); border: 1px solid var(--border-light);
+      border-radius: 999px; padding: 4px 8px 4px 10px;
+      font-size: 12px; font-weight: 600; cursor: grab;
+      margin: 3px 3px 3px 0; transition: var(--transition);
+      user-select: none;
+    }
+    .member-chip:hover { border-color: var(--accent); }
+    .member-chip.dragging { opacity: .4; }
+    .member-chip button {
+      background: none; border: none; cursor: pointer; color: #b7b7b7;
+      font-size: 14px; padding: 0 1px; line-height: 1;
+    }
+    .member-chip button:hover { color: #d11c1c; }
+
+    .empty-drop { font-size: 12px; color: var(--subtle); font-style: italic; padding: 6px 0; }
+
+    /* Result actions */
+    .result-section { display: none; }
+    .result-section.visible { display: block; }
+
+    .result-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .tag-chip {
+      font-size: 12px; background: var(--muted); border-radius: 999px;
+      padding: 3px 10px; color: var(--subtle); font-weight: 600;
+    }
+
+    .actions {
+      display: flex; gap: 8px; justify-content: center;
+      flex-wrap: wrap; padding: 10px 0 22px;
+    }
+
+    /* Dropdown */
+    .btn-dropdown { position: relative; display: inline-block; }
+    .btn-dropdown .dropdown-menu {
+      display: none; position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%); background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow-md);
+      min-width: 160px; z-index: 50; overflow: hidden;
+    }
+    .btn-dropdown.open .dropdown-menu { display: block; }
+    .dropdown-menu button {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      padding: 10px 14px; border: none; background: none; font-family: inherit;
+      font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; text-align: left;
+    }
+    .dropdown-menu button:hover { background: var(--muted); color: var(--accent); }
+    .dropdown-menu button + button { border-top: 1px solid var(--border-light); }
+    .dropdown-menu .dm-danger { color: #c33; }
+    .dropdown-menu .dm-danger:hover { background: #fef2f2; color: #b91c1c; }
+    body.dark .dropdown-menu { background: #2d3748; border-color: #374151; }
+    body.dark .dropdown-menu button { color: #e2e8f0; }
+    body.dark .dropdown-menu button:hover { background: #374151; color: #4a7cb5; }
+    body.dark .dropdown-menu button + button { border-color: #374151; }
+
+    /* Toast */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Preview overlay */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.55); padding: 18px; z-index: 999; overflow: auto;
+    }
+    .overlay.active { display: flex; justify-content: center; }
+    .preview {
+      width: 210mm; max-width: 100%; min-height: 297mm; background: #fff;
+      padding: 18mm; box-shadow: 0 8px 40px rgba(0,0,0,.25);
+      margin: auto; font-family: Arial, Helvetica, sans-serif;
+    }
+    .close {
+      position: fixed; top: 14px; right: 14px; width: 40px; height: 40px;
+      border-radius: 50%; border: none; background: #fff; cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,.2); font-size: 20px; z-index: 1000; color: #333;
+    }
+    .preview-actions {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      background: #fff; padding: 10px 14px; border-radius: 999px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2); display: flex; gap: 10px; z-index: 1000;
+    }
+    @media print {
+      body * { display: none !important; }
+      .overlay, .overlay * { display: block !important; }
+      .overlay { position: static !important; background: none !important; padding: 0 !important; }
+      .close, .preview-actions { display: none !important; }
+      .preview { box-shadow: none !important; width: 100% !important; min-height: auto !important; margin: 0 !important; padding: 15mm !important; }
+    }
+
+    /* Doc styles in preview */
+    .doc { font-size: 11pt; line-height: 1.3; color: #000; }
+    .doc .doc-title { font-size: 16pt; font-weight: bold; margin: 0 0 8pt; padding-bottom: 6pt; border-bottom: 1.5pt solid #0a365d; color: #0a365d; font-family: 'Arial Narrow', Arial, sans-serif; }
+    .doc .doc-meta { font-size: 10pt; color: #555; margin: 0 0 12pt; }
+    .doc .group-tbl { width: 100%; border-collapse: collapse; margin: 0; }
+    .doc .group-tbl td { vertical-align: top; padding: 8pt 10pt; border: 0.75pt solid #ccc; font-size: 10pt; }
+    .doc .group-tbl .gh { font-weight: bold; color: #0a365d; font-family: 'Arial Narrow', Arial, sans-serif; font-size: 11pt; background: #eef3f8; }
+    .doc .group-tbl .gm { color: #000; }
+
+    /* Hint box */
+    .hint-box {
+      background: var(--accent-light); border: 1px solid var(--border-light);
+      border-radius: var(--radius); padding: 10px 14px; font-size: 13px;
+      color: var(--text); margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start;
+    }
+    body.dark .hint-box { background: #1e3a57; border-color: #374151; }
+
+    /* Toggle more button */
+    .toggle-more {
+      background: none; border: none; cursor: pointer; font-family: inherit;
+      font-size: 12px; color: var(--subtle); padding: 0; font-weight: 600;
+      transition: color .2s ease;
+    }
+    .toggle-more:hover { color: var(--accent); }
+
+    footer {
+      max-width: 960px; margin: 20px auto 0; padding: 12px 18px;
+      border-top: 1px solid var(--border-light);
+      font-size: 13px; color: var(--subtle); text-align: center;
+    }
+    footer a { color: inherit; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Gruppeneinteilung</h1>
+
+  </div>
+  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Dark Mode umschalten">
+    <span id="darkLabel">Dark Mode</span>
+  </button>
+</header>
+
+<div class="container">
+
+  <!-- Abschnitt 1: Kontext -->
+  <div class="section">
+    <div class="section-head">
+      <div class="n">1</div>
+      <h2>Kontext <span style="font-weight:400;color:var(--subtle)">(optional)</span></h2>
+    </div>
+    <div class="section-body">
+      <div class="row">
+        <div class="field" style="flex:2">
+          <label for="ctx_titel">Bezeichnung / Anlass</label>
+          <input type="text" id="ctx_titel" placeholder="z.B. Stationsübergabe – Rollenspiel" />
+        </div>
+        <div class="field" style="flex:1.5">
+          <label for="ctx_kurs">Kurs / Klasse</label>
+          <input type="text" id="ctx_kurs" placeholder="z.B. GP 2025/08B" />
+        </div>
+        <div class="field" style="flex:0 0 140px">
+          <label for="ctx_datum">Datum</label>
+          <input type="date" id="ctx_datum" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abschnitt 2: Teilnehmer -->
+  <div class="section">
+    <div class="section-head">
+      <div class="n">2</div>
+      <h2>Teilnehmer</h2>
+      <div class="hint-right" id="nameCountHead"></div>
+    </div>
+    <div class="section-body">
+      <!-- Primär: Liste einfügen -->
+      <div class="field">
+        <label for="bulkInput">Liste einfügen <span class="hint">– ein Name pro Zeile</span></label>
+        <textarea id="bulkInput" placeholder="Maria Müller&#10;Jonas Schneider&#10;Lena Koch&#10;…" style="min-height:80px"></textarea>
+        <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="add-btn" onclick="addBulkNames()">Liste übernehmen</button>
+          <button class="add-btn" onclick="importWord()">Word importieren (.docx)</button>
+          <button class="add-btn" onclick="importTxt()">Textdatei importieren (.txt)</button>
+        </div>
+      </div>
+
+      <!-- Namensliste -->
+      <div id="nameList" class="name-list" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light);min-height:0"></div>
+
+      <!-- Löschen nur wenn Namen vorhanden -->
+      <div id="clearRow" style="display:none;margin-top:8px">
+        <button class="add-btn danger" onclick="clearAllNames()">× Alle löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abschnitt 3: Methode -->
+  <div class="section">
+    <div class="section-head">
+      <div class="n">3</div>
+      <h2>Einteilungsmethode</h2>
+    </div>
+    <div class="section-body">
+      <div class="method-grid">
+        <div class="method-card active" id="mc_random" onclick="selectMethod('random')">
+          <div class="mc-title">Zufällig</div>
+          <div class="mc-desc">Vollständig zufällige Zuteilung</div>
+        </div>
+        <div class="method-card" id="mc_bysize" onclick="selectMethod('bysize')">
+          <div class="mc-title">Nach Gruppengröße</div>
+          <div class="mc-desc">z.B. je 3 Pers. → ergibt 8 Gruppen</div>
+        </div>
+        <div class="method-card" id="mc_bycount" onclick="selectMethod('bycount')">
+          <div class="mc-title">Nach Gruppenanzahl</div>
+          <div class="mc-desc">z.B. 4 Gruppen → je ca. 6 Pers.</div>
+        </div>
+        <div class="method-card" id="mc_alpha" onclick="selectMethod('alpha')">
+          <div class="mc-title">Alphabetisch</div>
+          <div class="mc-desc">A–D in Gr. 1, E–H in Gr. 2 usw.</div>
+        </div>
+      </div>
+
+      <div class="method-options" id="opt_random">
+        <label for="opt_random_n">Anzahl Gruppen</label>
+        <input type="number" id="opt_random_n" min="2" max="30" value="4" style="max-width:120px" />
+      </div>
+      <div class="method-options" id="opt_bysize" style="display:none">
+        <label for="opt_size_n">Personen pro Gruppe</label>
+        <input type="number" id="opt_size_n" min="2" max="20" value="3" style="max-width:120px" />
+      </div>
+      <div class="method-options" id="opt_bycount" style="display:none">
+        <label for="opt_count_n">Anzahl Gruppen</label>
+        <input type="number" id="opt_count_n" min="2" max="30" value="4" style="max-width:120px" />
+      </div>
+      <div class="method-options" id="opt_alpha" style="display:none">
+        <label for="opt_alpha_n">Anzahl Gruppen</label>
+        <input type="number" id="opt_alpha_n" min="2" max="30" value="4" style="max-width:120px" />
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="generateGroups()">Gruppen einteilen</button>
+        <button class="btn subtle" id="reshuffleBtn" onclick="shuffleAgain()" style="display:none">Neu mischen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abschnitt 4: Ergebnis -->
+  <div class="section result-section" id="resultSection">
+    <div class="section-head">
+      <div class="n">4</div>
+      <h2>Ergebnis</h2>
+      <div class="hint-right" id="resultMeta"></div>
+    </div>
+    <div class="section-body">
+      <div class="groups-grid" id="groupsGrid"></div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-light);display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <button class="btn subtle" style="font-size:13px;padding:8px 12px" onclick="addEmptyGroup()">+ Gruppe hinzufügen</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn secondary" onclick="showPreview()">Vorschau</button>
+          <div class="btn-dropdown" id="ddExport">
+            <button class="btn primary" onclick="toggleDropdown('ddExport')">Exportieren ▾</button>
+            <div class="dropdown-menu">
+              <button onclick="downloadWord();closeDropdowns()">Word (.docx)</button>
+              <button onclick="downloadPDF();closeDropdowns()">PDF</button>
+              <button onclick="saveJSON();closeDropdowns()">Speichern (.json)</button>
+            </div>
+          </div>
+          <div class="btn-dropdown" id="ddMore">
+            <button class="btn subtle" onclick="toggleDropdown('ddMore')">Mehr ▾</button>
+            <div class="dropdown-menu">
+              <button onclick="loadJSON();closeDropdowns()">Laden (.json)</button>
+              <button class="dm-danger" onclick="resetAll();closeDropdowns()">Zurücksetzen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Import input -->
+<input type="file" id="importFile" accept="application/json,.json" style="position:fixed;left:-10000px;top:auto;width:1px;height:1px;opacity:0;" />
+<input type="file" id="importDocx" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="position:fixed;left:-10000px;top:auto;width:1px;height:1px;opacity:0;" />
+<input type="file" id="importTxtFile" accept=".txt,text/plain" style="position:fixed;left:-10000px;top:auto;width:1px;height:1px;opacity:0;" />
+
+<!-- Preview overlay -->
+<div class="overlay" id="overlay">
+  <button class="close" onclick="closePreview()">✕</button>
+  <div class="preview" id="previewContent"></div>
+  <div class="preview-actions">
+    <div class="btn-dropdown" id="ddExportPreview">
+      <button class="btn primary" onclick="toggleDropdown('ddExportPreview')">Exportieren ▾</button>
+      <div class="dropdown-menu">
+        <button onclick="downloadWord();closeDropdowns()">Word (.docx)</button>
+        <button onclick="downloadPDF();closeDropdowns()">PDF</button>
+      </div>
+    </div>
+    <button class="btn secondary" onclick="closePreview()">Schließen</button>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+let names = [];
+let groups = []; // [{title, members:[]}]
+let currentMethod = 'random';
+
+// ===================== DARK MODE =====================
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  updateDarkToggle(isDark);
+  try { localStorage.setItem('bigest_dark', isDark ? '1' : '0'); } catch(e) {}
+}
+function updateDarkToggle(isDark) {
+  document.getElementById('darkLabel').textContent = isDark ? 'Hell' : 'Dark Mode';
+}
+(function() {
+  let isDark = false;
+  try {
+    const stored = localStorage.getItem('bigest_dark');
+    isDark = stored !== null ? stored === '1' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  } catch(e) {}
+  if (isDark) { document.body.classList.add('dark'); updateDarkToggle(true); }
+})();
+
+// ===================== DATE =====================
+document.getElementById('ctx_datum').valueAsDate = new Date();
+
+// ===================== NAMES =====================
+function addSingleName() {
+  const input = document.getElementById('nameInput');
+  const val = input.value.trim();
+  if (!val) return;
+  val.split(/[,;]+/).map(s => s.trim()).filter(Boolean).forEach(n => {
+    if (!names.includes(n)) names.push(n);
+  });
+  input.value = '';
+  input.focus();
+  renderNameList();
+}
+
+function addBulkNames() {
+  const bulk = document.getElementById('bulkInput').value;
+  bulk.split(/\r?\n/).map(s => s.trim()).filter(Boolean).forEach(n => {
+    if (!names.includes(n)) names.push(n);
+  });
+  document.getElementById('bulkInput').value = '';
+  renderNameList();
+}
+
+function removeName(name) {
+  names = names.filter(n => n !== name);
+  renderNameList();
+}
+
+function clearAllNames() {
+  if (names.length && !confirm('Alle Namen löschen?')) return;
+  names = [];
+  renderNameList();
+}
+
+function renderNameList() {
+  const list = document.getElementById('nameList');
+  list.innerHTML = '';
+  names.forEach(n => {
+    const item = document.createElement('span');
+    item.className = 'name-item';
+    item.textContent = n;
+    const btn = document.createElement('button');
+    btn.title = 'Entfernen';
+    btn.textContent = '×';
+    btn.addEventListener('click', () => removeName(n));
+    item.appendChild(btn);
+    list.appendChild(item);
+  });
+  // Zähler im Section-Header
+  const countHead = document.getElementById('nameCountHead');
+  if (countHead) countHead.textContent = names.length ? `${names.length} Teilnehmer` : '';
+  // Alle-löschen-Zeile nur wenn Namen vorhanden
+  const clearRow = document.getElementById('clearRow');
+  if (clearRow) clearRow.style.display = names.length ? '' : 'none';
+}
+
+// ===================== METHOD =====================
+function selectMethod(m) {
+  currentMethod = m;
+  ['random','bysize','bycount','alpha'].forEach(id => {
+    document.getElementById('mc_' + id).classList.toggle('active', id === m);
+    document.getElementById('opt_' + id).style.display = id === m ? '' : 'none';
+  });
+}
+
+// ===================== GENERATE =====================
+function generateGroups() {
+  if (names.length < 2) { alert('Bitte mindestens 2 Teilnehmer eingeben.'); return; }
+
+  let sorted;
+  let n;
+
+  if (currentMethod === 'alpha') {
+    sorted = [...names].sort((a, b) => a.localeCompare(b, 'de'));
+    n = parseInt(document.getElementById('opt_alpha_n').value) || 4;
+  } else {
+    sorted = [...names].sort(() => Math.random() - 0.5);
+    if (currentMethod === 'random') {
+      n = parseInt(document.getElementById('opt_random_n').value) || 4;
+    } else if (currentMethod === 'bysize') {
+      const size = parseInt(document.getElementById('opt_size_n').value) || 3;
+      n = Math.ceil(sorted.length / size);
+    } else {
+      n = parseInt(document.getElementById('opt_count_n').value) || 4;
+    }
+  }
+
+  n = Math.max(2, Math.min(n, sorted.length));
+  groups = Array.from({length: n}, (_, i) => ({ title: `Gruppe ${i + 1}`, members: [] }));
+
+  if (currentMethod === 'alpha') {
+    // Block-Aufteilung: A–D in Gr.1, E–H in Gr.2 usw.
+    const blockSize = Math.ceil(sorted.length / n);
+    sorted.forEach((name, i) => groups[Math.min(Math.floor(i / blockSize), n - 1)].members.push(name));
+  } else {
+    sorted.forEach((name, i) => groups[i % n].members.push(name));
+  }
+
+  renderGroups();
+  showResultSection();
+}
+
+function shuffleAgain() {
+  const allMembers = groups.flatMap(g => g.members);
+  const shuffled = allMembers.sort(() => Math.random() - 0.5);
+  const n = groups.length;
+  groups.forEach(g => g.members = []);
+  shuffled.forEach((name, i) => groups[i % n].members.push(name));
+  renderGroups();
+}
+
+function addEmptyGroup() {
+  groups.push({ title: `Gruppe ${groups.length + 1}`, members: [] });
+  renderGroups();
+}
+
+function showResultSection() {
+  document.getElementById('resultSection').classList.add('visible');
+  const reshuffleBtn = document.getElementById('reshuffleBtn');
+  if (reshuffleBtn) reshuffleBtn.style.display = '';
+  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Meta info im Header
+  updateResultMeta();
+}
+
+function updateResultMeta() {
+  const meta = document.getElementById('resultMeta');
+  if (!meta || !groups.length) return;
+  const total = groups.reduce((s, g) => s + g.members.length, 0);
+  meta.innerHTML = `${total} TN · ${groups.length} Gr. · ⌀ ${(total / groups.length).toFixed(1)}`;
+}
+
+// ===================== RENDER GROUPS =====================
+let dragName = null;
+let dragFromGi = null;
+
+function renderGroups() {
+  const grid = document.getElementById('groupsGrid');
+  grid.innerHTML = '';
+
+  // Update meta
+  updateResultMeta();
+
+  groups.forEach((group, gi) => {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.dataset.gi = gi;
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'group-card-header';
+
+    const titleInput = document.createElement('input');
+    titleInput.className = 'group-title-input';
+    titleInput.value = group.title;
+    titleInput.title = 'Gruppenbezeichnung bearbeiten';
+    titleInput.addEventListener('change', () => { groups[gi].title = titleInput.value; });
+
+    const countSpan = document.createElement('span');
+    countSpan.className = 'group-count';
+    countSpan.textContent = group.members.length + ' P.';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.title = 'Gruppe löschen';
+    deleteBtn.textContent = '×';
+    deleteBtn.style.cssText = 'background:none;border:none;cursor:pointer;color:#b7b7b7;font-size:16px;padding:0 2px;line-height:1;margin-left:4px;';
+    deleteBtn.addEventListener('mouseover', () => deleteBtn.style.color = '#d11c1c');
+    deleteBtn.addEventListener('mouseout', () => deleteBtn.style.color = '#b7b7b7');
+    deleteBtn.addEventListener('click', () => {
+      if (groups.length <= 1) return;
+      // Mitglieder der gelöschten Gruppe in erste verbleibende Gruppe verschieben
+      const remaining = groups.filter((_, i) => i !== gi);
+      if (group.members.length > 0) {
+        remaining[0].members.push(...group.members);
+      }
+      groups = remaining;
+      renderGroups();
+    });
+
+    header.appendChild(titleInput);
+    header.appendChild(countSpan);
+    header.appendChild(deleteBtn);
+
+    // Members area
+    const area = document.createElement('div');
+    area.className = 'members-area';
+    area.dataset.gi = gi;
+
+    if (group.members.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-drop';
+      empty.textContent = 'Hierher ziehen …';
+      area.appendChild(empty);
+    }
+
+    group.members.forEach(name => {
+      const chip = document.createElement('span');
+      chip.className = 'member-chip';
+      chip.draggable = true;
+      chip.textContent = name;
+
+      const btn = document.createElement('button');
+      btn.title = 'Aus Gruppe entfernen';
+      btn.textContent = '×';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        groups[gi].members = groups[gi].members.filter(m => m !== name);
+        renderGroups();
+      });
+      chip.appendChild(btn);
+
+      // Drag events on chip
+      chip.addEventListener('dragstart', (e) => {
+        dragName = name;
+        dragFromGi = gi;
+        e.dataTransfer.effectAllowed = 'move';
+        // Small delay so the element doesn't disappear before ghost is created
+        setTimeout(() => chip.classList.add('dragging'), 0);
+      });
+      chip.addEventListener('dragend', () => {
+        chip.classList.remove('dragging');
+      });
+
+      area.appendChild(chip);
+    });
+
+    // Drop zone events – use counter trick to avoid dragleave flicker on child elements
+    let dragEnterCount = 0;
+
+    area.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      dragEnterCount++;
+      card.classList.add('drag-over');
+    });
+    area.addEventListener('dragleave', () => {
+      dragEnterCount--;
+      if (dragEnterCount <= 0) {
+        dragEnterCount = 0;
+        card.classList.remove('drag-over');
+      }
+    });
+    area.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    area.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dragEnterCount = 0;
+      card.classList.remove('drag-over');
+      if (dragName === null || dragFromGi === gi) return;
+      groups[dragFromGi].members = groups[dragFromGi].members.filter(m => m !== dragName);
+      if (!groups[gi].members.includes(dragName)) groups[gi].members.push(dragName);
+      dragName = null;
+      dragFromGi = null;
+      renderGroups();
+    });
+
+    card.appendChild(header);
+    card.appendChild(area);
+    grid.appendChild(card);
+  });
+}
+
+function removeMember(gi, name) {
+  groups[gi].members = groups[gi].members.filter(m => m !== name);
+  renderGroups();
+}
+
+// ===================== PREVIEW =====================
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function buildDocHTML(forExport) {
+  const titel = document.getElementById('ctx_titel').value || 'Gruppeneinteilung';
+  const kurs  = document.getElementById('ctx_kurs').value;
+  const datum = document.getElementById('ctx_datum').value;
+
+  const metaParts = [
+    kurs ? `Kurs: ${escHtml(kurs)}` : '',
+    datum ? `Datum: ${escHtml(formatDate(datum))}` : '',
+    `${groups.length} Gruppen · ${groups.reduce((s,g)=>s+g.members.length,0)} Teilnehmer`
+  ].filter(Boolean).join(' &nbsp;|&nbsp; ');
+
+  // Gruppen in Blöcke à max. 4 aufteilen
+  const chunkSize = 4;
+  const chunks = [];
+  for (let i = 0; i < groups.length; i += chunkSize) {
+    chunks.push(groups.slice(i, i + chunkSize));
+  }
+
+  const tables = chunks.map(chunk => {
+    const maxRows = Math.max(...chunk.map(g => g.members.length));
+    let rows = '<tr>' + chunk.map(g => `<td class="gh">${escHtml(g.title)}</td>`).join('') + '</tr>';
+    for (let r = 0; r < maxRows; r++) {
+      rows += '<tr>' + chunk.map(g => `<td class="gm">${escHtml(g.members[r] || '')}</td>`).join('') + '</tr>';
+    }
+    return `<table class="group-tbl" cellpadding="0" cellspacing="0">${rows}</table>`;
+  }).join('<div class="tbl-spacer"></div>');
+
+  return `
+    <div class="doc">
+      <div class="doc-title">${escHtml(titel)}</div>
+      ${metaParts ? `<div class="doc-meta">${metaParts}</div>` : ''}
+      ${tables}
+    </div>
+  `;
+}
+
+function showPreview() {
+  const titel = document.getElementById('ctx_titel').value || 'Gruppeneinteilung';
+  const kurs  = document.getElementById('ctx_kurs').value;
+  const datum = document.getElementById('ctx_datum').value;
+  const html  = buildExportHTML(titel, kurs, datum);
+  // Vorschau mit Export-CSS stylen
+  const style = document.getElementById('previewStyle');
+  if (!style) {
+    const s = document.createElement('style');
+    s.id = 'previewStyle';
+    s.textContent = exportCss.replace(/@page[^}]+}/g, '');
+    document.head.appendChild(s);
+  }
+  document.getElementById('previewContent').innerHTML = html;
+  document.getElementById('overlay').classList.add('active');
+}
+function closePreview() {
+  document.getElementById('overlay').classList.remove('active');
+}
+
+// ===================== EXPORT =====================
+
+// A4 Hochkant: Innenbreite ca. 174mm (210 - 2x18mm Rand)
+// 2 Gruppen nebeneinander = je ~85mm, Abstand 4mm
+const PAGE_INNER_MM = 174;
+const COL_GAP_MM = 4;
+const COLS = 2;
+const COL_W_MM = Math.floor((PAGE_INNER_MM - COL_GAP_MM) / COLS); // ~85mm
+
+function buildExportHTML(titel, kurs, datum) {
+  const metaParts = [
+    kurs ? `Kurs: ${escHtml(kurs)}` : '',
+    datum ? `Datum: ${escHtml(formatDate(datum))}` : '',
+    `${groups.length} Gruppen · ${groups.reduce((s,g)=>s+g.members.length,0)} Teilnehmer`
+  ].filter(Boolean).join(' &nbsp;|&nbsp; ');
+
+  // Gruppen in Zweier-Zeilen aufteilen
+  const rows = [];
+  for (let i = 0; i < groups.length; i += COLS) {
+    rows.push(groups.slice(i, i + COLS));
+  }
+
+  const rowsHtml = rows.map(row => {
+    const cells = row.map(group => {
+      const maxRows = group.members.length;
+      let memberRows = group.members.map(m =>
+        `<tr><td class="gm">${escHtml(m)}</td></tr>`
+      ).join('');
+      return `
+        <td class="grp-cell">
+          <table class="inner-tbl" cellpadding="0" cellspacing="0">
+            <tr><td class="gh">${escHtml(group.title)}</td></tr>
+            ${memberRows}
+          </table>
+        </td>`;
+    });
+    // Wenn nur 1 Gruppe in der letzten Zeile, leere Zelle ergänzen
+    if (row.length < COLS) cells.push('<td class="grp-cell"></td>');
+    return `<tr>${cells.join('<td class="gap-cell"></td>')}</tr>`;
+  }).join('<tr class="row-gap"><td colspan="3"></td></tr>');
+
+  return `
+    <div class="doc">
+      <div class="doc-title">${escHtml(titel)}</div>
+      ${metaParts ? `<div class="doc-meta">${metaParts}</div>` : ''}
+      <table class="outer-tbl" cellpadding="0" cellspacing="0">
+        ${rowsHtml}
+      </table>
+    </div>`;
+}
+
+const exportCss = `
+  @page { size: A4 portrait; margin: 18mm; }
+  body { font-family: Arial, sans-serif; font-size: 11pt; color: #000;
+         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-title { font-size: 15pt; font-weight: bold; border-bottom: 1.5pt solid #0a365d;
+               color: #0a365d; padding-bottom: 5pt; margin-bottom: 6pt;
+               font-family: 'Arial Narrow', Arial, sans-serif; }
+  .doc-meta { font-size: 9pt; color: #555; margin-bottom: 10pt; }
+  .outer-tbl { width: 100%; border-collapse: collapse; }
+  .grp-cell { width: ${COL_W_MM}mm; vertical-align: top; padding: 0; }
+  .gap-cell { width: ${COL_GAP_MM}mm; }
+  .row-gap { height: 6pt; }
+  .inner-tbl { width: 100%; border-collapse: collapse; }
+  .inner-tbl td { border: 0.75pt solid #ccc; padding: 4pt 6pt; vertical-align: top;
+                  word-wrap: break-word; }
+  .gh { font-weight: bold; color: #0a365d; background: #eef3f8;
+        font-family: 'Arial Narrow', Arial, sans-serif; font-size: 11pt; }
+  .gm { font-size: 10pt; }
+`;
+
+async function downloadWord() {
+  const titel = document.getElementById('ctx_titel').value || 'Gruppeneinteilung';
+  const kurs  = document.getElementById('ctx_kurs').value;
+  const datum = document.getElementById('ctx_datum').value;
+
+  // JSZip laden falls noch nicht da
+  if (!window.JSZip) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  // A4 in EMU: 210mm x 297mm
+  // 1mm = 36000 EMU, 1 DXA = 635 EMU, 1mm = ~56.69 DXA
+  // A4: 11906 x 16838 DXA, Rand 18mm = 1020 DXA
+  // Innenbreite: 11906 - 2*1020 = 9866 DXA
+  // 2 Spalten mit 4mm Lücke: Lücke = 227 DXA, Spalte = (9866-227)/2 = 4819 DXA
+  const PAGE_W = 11906, PAGE_H = 16838;
+  const MARGIN = 1020;
+  const INNER_W = PAGE_W - 2 * MARGIN; // 9866
+  const GAP = 227;
+  const COL_W = Math.floor((INNER_W - GAP) / 2); // 4819
+
+  const metaLine = [
+    kurs ? `Kurs: ${kurs}` : '',
+    datum ? `Datum: ${formatDate(datum)}` : '',
+    `${groups.length} Gruppen · ${groups.reduce((s,g)=>s+g.members.length,0)} Teilnehmer`
+  ].filter(Boolean).join('   |   ');
+
+  // Farben
+  const BLUE = '0A365D';
+  const LIGHT_BG = 'EEF3F8';
+  const BORDER_CLR = 'CCCCCC';
+
+  function xmlEsc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+  }
+
+  function borderXml() {
+    const b = `<w:top w:val="single" w:sz="4" w:space="0" w:color="${BORDER_CLR}"/>
+      <w:left w:val="single" w:sz="4" w:space="0" w:color="${BORDER_CLR}"/>
+      <w:bottom w:val="single" w:sz="4" w:space="0" w:color="${BORDER_CLR}"/>
+      <w:right w:val="single" w:sz="4" w:space="0" w:color="${BORDER_CLR}"/>`;
+    return `<w:tcBorders>${b}</w:tcBorders>`;
+  }
+
+  function headerCell(text, width) {
+    return `<w:tc>
+      <w:tcPr>
+        <w:tcW w:w="${width}" w:type="dxa"/>
+        ${borderXml()}
+        <w:shd w:val="clear" w:color="auto" w:fill="${LIGHT_BG}"/>
+        <w:tcMar><w:top w:w="80" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:bottom w:w="80" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar>
+      </w:tcPr>
+      <w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr>
+        <w:r><w:rPr><w:b/><w:color w:val="${BLUE}"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr>
+          <w:t xml:space="preserve">${xmlEsc(text)}</w:t></w:r></w:p>
+    </w:tc>`;
+  }
+
+  function memberCell(text, width) {
+    return `<w:tc>
+      <w:tcPr>
+        <w:tcW w:w="${width}" w:type="dxa"/>
+        ${borderXml()}
+        <w:tcMar><w:top w:w="60" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="120" w:type="dxa"/></w:tcMar>
+      </w:tcPr>
+      <w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr>
+        <w:r><w:rPr><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr>
+          <w:t xml:space="preserve">${xmlEsc(text)}</w:t></w:r></w:p>
+    </w:tc>`;
+  }
+
+  function emptyCell(width) {
+    return `<w:tc>
+      <w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>
+        <w:tcBorders>
+          <w:top w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+          <w:left w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+          <w:bottom w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+          <w:right w:val="none" w:sz="0" w:space="0" w:color="auto"/>
+        </w:tcBorders>
+      </w:tcPr>
+      <w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>
+    </w:tc>`;
+  }
+
+  function gapCell() { return emptyCell(GAP); }
+
+  // Gruppen paarweise
+  const pairs = [];
+  for (let i = 0; i < groups.length; i += 2) pairs.push(groups.slice(i, i+2));
+
+  let tableRows = '';
+  pairs.forEach(pair => {
+    const g1 = pair[0], g2 = pair[1] || null;
+    const maxRows = Math.max(g1.members.length, g2 ? g2.members.length : 0);
+
+    // Kopfzeile
+    tableRows += `<w:tr>
+      ${headerCell(g1.title, COL_W)}
+      ${gapCell()}
+      ${g2 ? headerCell(g2.title, COL_W) : emptyCell(COL_W)}
+    </w:tr>`;
+
+    // Mitgliederzeilen
+    for (let r = 0; r < maxRows; r++) {
+      const m1 = g1.members[r] || '';
+      const m2 = g2 ? (g2.members[r] || '') : '';
+      tableRows += `<w:tr>
+        ${memberCell(m1, COL_W)}
+        ${gapCell()}
+        ${memberCell(m2, COL_W)}
+      </w:tr>`;
+    }
+
+    // Abstandszeile zwischen Paaren
+    tableRows += `<w:tr>
+      <w:trPr><w:trHeight w:val="200"/></w:trPr>
+      ${emptyCell(COL_W)}${gapCell()}${emptyCell(COL_W)}
+    </w:tr>`;
+  });
+
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<w:body>
+  <w:p>
+    <w:pPr><w:spacing w:before="0" w:after="80"/></w:pPr>
+    <w:r><w:rPr><w:b/><w:color w:val="${BLUE}"/><w:sz w:val="30"/><w:szCs w:val="30"/></w:rPr>
+      <w:t>${xmlEsc(titel)}</w:t></w:r>
+  </w:p>
+  ${metaLine ? `<w:p>
+    <w:pPr><w:spacing w:before="0" w:after="120"/></w:pPr>
+    <w:r><w:rPr><w:color w:val="555555"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr>
+      <w:t>${xmlEsc(metaLine)}</w:t></w:r>
+  </w:p>` : ''}
+  <w:tbl>
+    <w:tblPr>
+      <w:tblW w:w="${INNER_W}" w:type="dxa"/>
+      <w:tblBorders>
+        <w:insideH w:val="none"/><w:insideV w:val="none"/>
+      </w:tblBorders>
+      <w:tblLook w:val="0000"/>
+    </w:tblPr>
+    <w:tblGrid>
+      <w:gridCol w:w="${COL_W}"/>
+      <w:gridCol w:w="${GAP}"/>
+      <w:gridCol w:w="${COL_W}"/>
+    </w:tblGrid>
+    ${tableRows}
+  </w:tbl>
+  <w:sectPr>
+    <w:pgSz w:w="${PAGE_W}" w:h="${PAGE_H}"/>
+    <w:pgMar w:top="${MARGIN}" w:right="${MARGIN}" w:bottom="${MARGIN}" w:left="${MARGIN}"/>
+  </w:sectPr>
+</w:body>
+</w:document>`;
+
+  const relsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:docDefaults>
+    <w:rPrDefault><w:rPr>
+      <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>
+      <w:sz w:val="22"/><w:szCs w:val="22"/>
+    </w:rPr></w:rPrDefault>
+  </w:docDefaults>
+</w:styles>`;
+
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
+</Types>`;
+
+  const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', contentTypes);
+  zip.file('_rels/.rels', rootRels);
+  zip.file('word/document.xml', documentXml);
+  zip.file('word/_rels/document.xml.rels', relsXml);
+  zip.file('word/styles.xml', stylesXml);
+
+  const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+  const url = URL.createObjectURL(blob);
+  const fname = (titel.replace(/[^a-zA-Z0-9äöüÄÖÜß\s-]/g,'').replace(/\s+/g,'_').slice(0,60) || 'Gruppeneinteilung') + '.docx';
+  const a = document.createElement('a'); a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function downloadPDF() {
+  const titel = document.getElementById('ctx_titel').value || 'Gruppeneinteilung';
+  const kurs  = document.getElementById('ctx_kurs').value;
+  const datum = document.getElementById('ctx_datum').value;
+  const html  = buildExportHTML(titel, kurs, datum);
+  const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escHtml(titel)}</title><style>${exportCss}</style></head><body>${html}</body></html>`;
+  const w = window.open('', '_blank');
+  if (!w) { alert('Pop-up blockiert – bitte erlauben und erneut versuchen.'); return; }
+  w.document.open(); w.document.write(full); w.document.close();
+  w.onload = () => setTimeout(() => w.print(), 250);
+  setTimeout(() => { try { w.print(); } catch(e) {} }, 800);
+}
+
+// ===================== SAVE / LOAD =====================
+function saveJSON() {
+  const payload = {
+    _type: 'gruppeneinteilung',
+    _version: 1,
+    savedAt: new Date().toISOString(),
+    data: {
+      titel: document.getElementById('ctx_titel').value,
+      kurs: document.getElementById('ctx_kurs').value,
+      datum: document.getElementById('ctx_datum').value,
+      names,
+      groups
+    }
+  };
+  const titel = payload.data.titel || 'Gruppeneinteilung';
+  const fname = titel.replace(/[^a-zA-Z0-9äöüÄÖÜß\s-]/g,'').replace(/\s+/g,'_').slice(0,60) + '.json';
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function loadJSON() {
+  document.getElementById('importFile').value = '';
+  document.getElementById('importFile').click();
+}
+
+document.getElementById('importFile').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  try {
+    const text = file.text ? await file.text() : await new Promise((res, rej) => {
+      const r = new FileReader(); r.onload = () => res(String(r.result||'')); r.onerror = () => rej(); r.readAsText(file);
+    });
+    const payload = JSON.parse(text);
+    const data = payload.data || payload;
+    document.getElementById('ctx_titel').value = data.titel || '';
+    document.getElementById('ctx_kurs').value = data.kurs || '';
+    document.getElementById('ctx_datum').value = data.datum || '';
+    names = Array.isArray(data.names) ? data.names : [];
+    groups = Array.isArray(data.groups) ? data.groups : [];
+    renderNameList();
+    if (groups.length) { renderGroups(); showResultSection(); }
+    alert('Geladen.');
+  } catch(err) {
+    alert('Datei konnte nicht gelesen werden.');
+  }
+});
+
+function resetAll() {
+  if (!confirm('Alle Daten zurücksetzen?')) return;
+  names = []; groups = [];
+  document.getElementById('ctx_titel').value = '';
+  document.getElementById('ctx_kurs').value = '';
+  document.getElementById('ctx_datum').valueAsDate = new Date();
+  renderNameList();
+  document.getElementById('resultSection').classList.remove('visible');
+  const reshuffleBtn = document.getElementById('reshuffleBtn');
+  if (reshuffleBtn) reshuffleBtn.style.display = 'none';
+}
+
+// ===================== TOGGLE MORE INPUT =====================
+function toggleMoreInput() {
+  const panel = document.getElementById('moreInput');
+  const btn = document.getElementById('toggleMoreBtn');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : '';
+  btn.textContent = isOpen ? 'Namen einzeln hinzufügen ▾' : 'Namen einzeln hinzufügen ▴';
+}
+
+// ===================== DROPDOWN =====================
+function toggleDropdown(id) {
+  const el = document.getElementById(id);
+  const wasOpen = el.classList.contains('open');
+  closeDropdowns();
+  if (!wasOpen) el.classList.add('open');
+}
+function closeDropdowns() {
+  document.querySelectorAll('.btn-dropdown.open').forEach(d => d.classList.remove('open'));
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('.btn-dropdown')) closeDropdowns(); });
+
+// ===================== TXT IMPORT =====================
+function importTxt() {
+  const input = document.getElementById('importTxtFile');
+  input.value = '';
+  input.click();
+}
+
+document.getElementById('importTxtFile').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  try {
+    const text = file.text ? await file.text() : await new Promise((res, rej) => {
+      const r = new FileReader(); r.onload = () => res(String(r.result||'')); r.onerror = rej; r.readAsText(file, 'UTF-8');
+    });
+    const newNames = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0 && l.length < 80);
+    if (!newNames.length) { alert('Keine Namen gefunden.'); return; }
+    let added = 0;
+    newNames.forEach(n => { if (!names.includes(n)) { names.push(n); added++; } });
+    renderNameList();
+    alert(`${added} Name${added !== 1 ? 'n' : ''} importiert (${newNames.length - added} bereits vorhanden).`);
+  } catch(err) {
+    alert('Fehler beim Lesen der Datei.');
+  }
+});
+
+// ===================== WORD IMPORT =====================
+function importWord() {
+  const input = document.getElementById('importDocx');
+  input.value = '';
+  input.click();
+}
+
+document.getElementById('importDocx').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  try {
+    // docx = ZIP – wir entpacken es im Browser mit DecompressionStream oder JSZip-freier Methode
+    const arrayBuffer = await file.arrayBuffer();
+    const xmlText = await extractDocxText(arrayBuffer);
+    if (!xmlText) { alert('Konnte die Word-Datei nicht lesen.'); return; }
+
+    // Alle <w:t>-Inhalte extrahieren und zu Zeilen zusammensetzen
+    // Absätze werden durch <w:p>-Tags getrennt
+    const lines = parseDocxLines(xmlText);
+    const newNames = lines.filter(l => l.trim()).map(l => l.trim()).filter(l => l.length > 0 && l.length < 80);
+
+    if (!newNames.length) { alert('Keine Namen gefunden. Bitte prüfen, ob die Datei Namen enthält (ein Name pro Zeile).'); return; }
+
+    let added = 0;
+    newNames.forEach(n => { if (!names.includes(n)) { names.push(n); added++; } });
+    renderNameList();
+    alert(`${added} Name${added !== 1 ? 'n' : ''} importiert (${newNames.length - added} bereits vorhanden).`);
+  } catch(err) {
+    alert('Fehler beim Lesen der Word-Datei. Bitte sicherstellen, dass es eine .docx-Datei ist.');
+    console.error(err);
+  }
+});
+
+async function extractDocxText(arrayBuffer) {
+  // Lade JSZip dynamisch (CDN)
+  if (!window.JSZip) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const docXml = zip.file('word/document.xml');
+  if (!docXml) return null;
+  return await docXml.async('string');
+}
+
+function parseDocxLines(xml) {
+  // Jeden <w:p>-Block als eigene Zeile behandeln
+  const lines = [];
+  const paragraphs = xml.split(/<w:p[ >\/]/);
+  paragraphs.forEach(para => {
+    // Alle <w:t>-Texte innerhalb des Absatzes sammeln
+    const texts = [];
+    const re = /<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>/g;
+    let m;
+    while ((m = re.exec(para)) !== null) {
+      texts.push(m[1]);
+    }
+    const line = texts.join('').trim();
+    if (line) lines.push(line);
+  });
+  return lines;
+}
+
+let deletedMemberUndo = null, deletedMemberTimer = null;
+
+function removeMemberWithUndo(gi, name) {
+  deletedMemberUndo = { gi, name };
+  groups[gi].members = groups[gi].members.filter(m => m !== name);
+  renderGroups();
+  showUndoToast(`${name} entfernt`, () => {
+    if (deletedMemberUndo) {
+      groups[deletedMemberUndo.gi].members.push(deletedMemberUndo.name);
+      deletedMemberUndo = null;
+      renderGroups();
+    }
+  });
+}
+
+function showUndoToast(msg, undoFn) {
+  let toast = document.getElementById('undoToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'undoToast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9999;animation:fadeInUp .2s ease;';
+    document.body.appendChild(toast);
+  }
+  clearTimeout(deletedMemberTimer);
+  toast.innerHTML = `<span>${escHtml(msg)}</span><button onclick="(${undoFn.toString()})()" style="background:#2C4A6E;border:none;color:#fff;padding:4px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-size:13px;font-family:inherit;">Rückgängig</button>`;
+  toast.style.display = 'flex';
+  deletedMemberTimer = setTimeout(() => { toast.style.display = 'none'; deletedMemberUndo = null; }, 5000);
+}
+</script>
+
+<footer>
+  <a href="https://florianloyns.github.io/Impressum/" target="_blank" rel="noopener noreferrer">Impressum</a>
+</footer>
+
+</body>
+</html>
