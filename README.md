@@ -70,12 +70,14 @@ Gruppeneinteilungen kosten im Unterricht Zeit und erzeugen Diskussionen. Dieses 
 4. Bei Bedarf per Drag & Drop nachbearbeiten und als Word oder PDF exportieren
 
 
-## Technisches
+## Impressum
 
-Eine einzelne HTML-Datei – kein Build, kein Framework, kein Server, keine externen Abhängigkeiten. Läuft vollständig im Browser, auch offline.
+Verantwortlich: Florian Loyns. Pflichtangaben nach § 5 DDG und Kontakt: [Impressum](https://florianloyns.github.io/Impressum/)
 
-- Keine Datenübertragung, kein Tracking (DSGVO-konform)
-- JSON-Export speichert Einteilungen lokal – keine Daten verlassen das Gerät
+## Lizenz
+
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de) · Nutzen, anpassen und teilen – unter Namensnennung, nicht-kommerziell und unter gleichen Bedingungen.
+
 
 ---
 
