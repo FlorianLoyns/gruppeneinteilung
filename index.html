@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2c4a6e">
 <title>Gruppeneinteilung</title>
 
   <meta name="description" content="Gruppen bilden – flexibel, transparent, sofort einsatzbereit. Vier Einteilungsmethoden, Drag-and-Drop-Nachbearbeitung, Word-/PDF-Export. Alles in einer HTML-Datei, offline nutzbar.">
@@ -54,6 +55,7 @@
       color: var(--text);
       line-height: 1.55;
       font-size: 15px;
+      accent-color: var(--accent);
       transition: background .25s ease, color .25s ease;
     }
 
@@ -354,7 +356,8 @@
       border-top: 1px solid var(--border-light);
       font-size: 13px; color: var(--subtle); text-align: center;
     }
-    footer a { color: inherit; }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
