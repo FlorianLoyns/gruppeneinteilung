@@ -59,40 +59,6 @@
       transition: background .25s ease, color .25s ease;
     }
 
-    /* DARK MODE */
-    body.dark {
-      --accent: #4a7cb5;
-      --accent-hover: #3a6a9f;
-      --accent-light: #1e3a57;
-      --border: #374151;
-      --border-light: #2d3748;
-      --bg: #1a1f2e;
-      --muted: #232938;
-      --text: #e2e8f0;
-      --subtle: #9ca3af;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
-      --shadow-md: 0 2px 8px rgba(0,0,0,.4);
-    }
-    body.dark input, body.dark textarea, body.dark select {
-      background: #2d3748; color: #e2e8f0; border-color: #374151;
-    }
-    body.dark input:focus, body.dark textarea:focus, body.dark select:focus {
-      border-color: #4a7cb5; box-shadow: 0 0 0 3px rgba(74,124,181,0.2);
-    }
-    body.dark .btn.secondary { background: #2d3748; border-color: #4a7cb5; color: #4a7cb5; }
-    body.dark .btn.secondary:hover { background: #1e3a57; }
-    body.dark .btn.subtle { background: transparent; border-color: #374151; color: #9ca3af; }
-    body.dark .btn.subtle:hover { background: #2d3748; color: #e2e8f0; border-color: #4a7cb5; }
-    body.dark .group-card { background: #2d3748; border-color: #374151; }
-    body.dark .group-card.drag-over { border-color: #4a7cb5; background: #1e3a57; }
-    body.dark .member-chip { background: #374151; border-color: #4b5563; color: #e2e8f0; }
-    body.dark .member-chip:hover { border-color: #4a7cb5; }
-    body.dark .member-chip.dragging { background: #4a7cb5; color: #fff; }
-    body.dark .tag-chip { background: #374151; color: #9ca3af; }
-    body.dark .name-item { background: #232938; border-color: #374151; }
-    body.dark .name-item:hover { border-color: #4a7cb5; }
-    body.dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-
     header {
       background: var(--bg);
       color: var(--text);
@@ -107,14 +73,6 @@
     }
     header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.3px; margin: 0 0 0 18px; }
     header .sub { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 2px; margin-left: 18px; }
-
-    .dark-toggle {
-      background: none; border: 1px solid var(--border); border-radius: 999px;
-      padding: 5px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
-      color: var(--subtle); display: flex; align-items: center; gap: 6px;
-      transition: var(--transition); margin-right: 18px; white-space: nowrap;
-    }
-    .dark-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
     .container { max-width: 960px; margin: 0 auto; padding: 18px; }
 
@@ -286,10 +244,6 @@
     .dropdown-menu button + button { border-top: 1px solid var(--border-light); }
     .dropdown-menu .dm-danger { color: #c33; }
     .dropdown-menu .dm-danger:hover { background: #fef2f2; color: #b91c1c; }
-    body.dark .dropdown-menu { background: #2d3748; border-color: #374151; }
-    body.dark .dropdown-menu button { color: #e2e8f0; }
-    body.dark .dropdown-menu button:hover { background: #374151; color: #4a7cb5; }
-    body.dark .dropdown-menu button + button { border-color: #374151; }
 
     /* Toast */
     @keyframes fadeInUp {
@@ -341,7 +295,6 @@
       border-radius: var(--radius); padding: 10px 14px; font-size: 13px;
       color: var(--text); margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start;
     }
-    body.dark .hint-box { background: #1e3a57; border-color: #374151; }
 
     /* Toggle more button */
     .toggle-more {
@@ -367,9 +320,6 @@
     <h1>Gruppeneinteilung</h1>
 
   </div>
-  <button class="dark-toggle" id="darkToggle" onclick="toggleDark()" title="Dark Mode umschalten">
-    <span id="darkLabel">Dark Mode</span>
-  </button>
 </header>
 
 <div class="container">
@@ -540,23 +490,6 @@ let groups = []; // [{title, members:[]}]
 let currentMethod = 'random';
 
 // ===================== DARK MODE =====================
-function toggleDark() {
-  const isDark = document.body.classList.toggle('dark');
-  updateDarkToggle(isDark);
-  try { localStorage.setItem('bigest_dark', isDark ? '1' : '0'); } catch(e) {}
-}
-function updateDarkToggle(isDark) {
-  document.getElementById('darkLabel').textContent = isDark ? 'Hell' : 'Dark Mode';
-}
-(function() {
-  let isDark = false;
-  try {
-    const stored = localStorage.getItem('bigest_dark');
-    isDark = stored !== null ? stored === '1' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  } catch(e) {}
-  if (isDark) { document.body.classList.add('dark'); updateDarkToggle(true); }
-})();
-
 // ===================== DATE =====================
 document.getElementById('ctx_datum').valueAsDate = new Date();
 
